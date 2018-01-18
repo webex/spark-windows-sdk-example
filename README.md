@@ -24,13 +24,13 @@ This application is built with **Vistual Studio 2015** and requires:
 
 ## Usage
 Below is the features of this demo.
-1. Login and Logout
+1. Login and Logout:
 This feature demonstrate [OAuth](https://oauth.net/) and [JSON Web Token](https://jwt.io/) authenticate method.
-2. Video and audio setup.
+2. Video and audio setup:
 This feature demonstrate preview camera and select audio/video IO device such as microphone, speaker, camera and so on.
-3. Initiate call
+3. Initiate call:
 This feature demonstrate call out by one on one call and room call.
-4. Waiting call
+4. Waiting call:
 This feature demonstrate incoming call.
 
 ## License
