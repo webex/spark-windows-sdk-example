@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="KitchenSink.CallView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:local="clr-namespace:KitchenSink"
+        xmlns:sys ="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        d:DesignHeight="450" d:DesignWidth="800"
+        >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/Styles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="bool2VisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="18" VerticalAlignment="Top">
+                <Button DockPanel.Dock="Left" x:Name="Back"  Content="Back" Grid.Row="0" Width="50" Height="20" HorizontalAlignment="Left" Command="{Binding BackCommand}" />
+                <TextBlock Text="{Binding CallStatus}" TextAlignment="Center"/>
+            </DockPanel>
+            <TextBlock DockPanel.Dock="Bottom" Margin="10,10,10,0" VerticalAlignment="Bottom" Text="{Binding EventInfo}" TextAlignment="Center"/>
+            <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="266">
+                <CheckBox x:Name="cbSndVideo" Content="Sending video" Margin="10" IsChecked="{Binding IfSendVedio,UpdateSourceTrigger=PropertyChanged}"  />
+                <CheckBox x:Name="cbSndAudio" Content="Sending audio" Margin="10" IsChecked="{Binding IfSendAudio,UpdateSourceTrigger=PropertyChanged}"  />
+                <CheckBox x:Name="cbRcvVideo" Content="Receiving video" Margin="10" IsChecked="{Binding IfReceiveVedio,UpdateSourceTrigger=PropertyChanged}" />
+                <CheckBox x:Name="cbRcvAudio" Content="Receiving audio" Margin="10" IsChecked="{Binding IfReceiveAudio,UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Button x:Name="btEndCall" Content="End Call" Margin="10" Command="{Binding EndCallCMD}" />
+                    <Button Grid.Row="1" Content="Keyboard" Margin="10" Command="{Binding KeyboardCMD}"/>
+                </Grid>
+            </StackPanel>
+            <Grid DockPanel.Dock="Left" Margin="10,0,10,0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="300*"/>
+                    <RowDefinition Height="72*"/>
+                </Grid.RowDefinitions>
+                <local:FixedAspectWinFormsHost x:Name="wfhShareScreenVideo" Background="White" AspectRatio="{Binding Path=AspectShareScreenVideo}" >
+                    <wf:PictureBox x:Name="pbShareScreenVideo" SizeMode="AutoSize"/>
+                </local:FixedAspectWinFormsHost>
+                <Border Name="remoteVideoOrg">
+                    <local:FixedAspectWinFormsHost x:Name="wfhRemotVideo" Background="White" AspectRatio="{Binding Path=AspectRatioRemoteVedio}">
+                        <wf:PictureBox x:Name="pbRemoteVideo" SizeMode="AutoSize"/>
+                    </local:FixedAspectWinFormsHost>
+                </Border>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="128*"/>
+                        <ColumnDefinition Width="277*"/>
+                        <ColumnDefinition Width="128*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Name="remoteVideoMini" Grid.Row="1">
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="2"  >
+                        <local:FixedAspectWinFormsHost x:Name="wfhLocalVideo"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                            <wf:PictureBox x:Name="pblocalVideo" BackColor="White" />
+                        </local:FixedAspectWinFormsHost>
+                    </Border>
+                </Grid>
+            </Grid>
+        </DockPanel>
+        <DockPanel Name="commentLayer"  
+                   Background="Azure" 
+                   LastChildFill="True" 
+                   HorizontalAlignment="Right" 
+                   Height="250" Margin="20,5" 
+                   Visibility="{Binding IfShowRatingView, Converter={StaticResource bool2VisibilityConverter}}">
+            <TextBlock Text="Please rate this call" Margin="10" Height="18" DockPanel.Dock="Top" TextAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" Margin="10,0,10,10" Height="40" DockPanel.Dock="Bottom" HorizontalAlignment="Center">
+                <Button Content="Send"   Width="100" Command="{Binding Path=SendFeedBackCMD}"/>
+                <Button Content="No, thanks"  Command="{Binding Path=HideRatingViewCMD}" Width="100"/>
+            </StackPanel>
+            <CheckBox DockPanel.Dock="Bottom" HorizontalAlignment="Center" Content="Include Log" IsChecked="{Binding IfIncludeLog,UpdateSourceTrigger=PropertyChanged}"/>
+            <Viewbox StretchDirection="Both" Stretch="Uniform" Height="60" DockPanel.Dock="Bottom">
+                <local:RatingCell RatingValue="{Binding RatingValue,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"  Margin="20,10"/>
+            </Viewbox>
+            <TextBox Name="txtComment" TextWrapping="Wrap" Margin="10" MinHeight="70" VerticalAlignment="Stretch" DockPanel.Dock="Top" Height="Auto" Text="{Binding Path=Comment, UpdateSourceTrigger=LostFocus}" />
+        </DockPanel>
+        <Grid DockPanel.Dock="Right" Width="200" Height="250" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Azure" Margin="20" Visibility="{Binding IfShowkeyboard, Converter={StaticResource bool2VisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Row="0" Grid.ColumnSpan="3" Margin="5" Text="{Binding InputKey}"/>
+            <Button Grid.Row="1" Grid.Column="0" Width="50" CommandParameter="1" Content="1" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="1" Grid.Column="1" Width="50" CommandParameter="2" Content="2" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="1" Grid.Column="2" Width="50" CommandParameter="3" Content="3" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="2" Grid.Column="0" Width="50" CommandParameter="4" Content="4" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="2" Grid.Column="1" Width="50" CommandParameter="5" Content="5" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="2" Grid.Column="2" Width="50" CommandParameter="6" Content="6" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="3" Grid.Column="0" Width="50" CommandParameter="7" Content="7" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="3" Grid.Column="1" Width="50" CommandParameter="8" Content="8" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="3" Grid.Column="2" Width="50" CommandParameter="9" Content="9" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="4" Grid.Column="0" Width="50" CommandParameter="*" Content="*" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="4" Grid.Column="1" Width="50" CommandParameter="0" Content="0" Command="{Binding DtmfCMD}"/>
+            <Button Grid.Row="4" Grid.Column="2" Width="50" CommandParameter="#" Content="#" Command="{Binding DtmfCMD}"/>
+        </Grid>
+    </Grid>
+</UserControl>
