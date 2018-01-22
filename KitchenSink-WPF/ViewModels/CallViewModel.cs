@@ -355,7 +355,7 @@ namespace KitchenSink
             {
                 if (result.IsSuccess)
                 {
-                    currentCall = (SparkSDK.Call)result.Data;
+                    currentCall = result.Data;
                     RegisterCallEvent();
                     this.curCallView.RefreshViews();
                 }
@@ -373,7 +373,7 @@ namespace KitchenSink
                 return;
             }
             RegisterCallEvent();
-            currentCall.Answer(MediaOption.AudioVideo(curCallView.LocalViewHandle, curCallView.RemoteViewHandle), result =>
+            currentCall.Answer(MediaOption.AudioVideoShare(curCallView.LocalViewHandle, curCallView.RemoteViewHandle, curCallView.RemoteShareViewHandle), result =>
             {
                 if (!result.IsSuccess)
                 {
