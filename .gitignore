@@ -4,6 +4,8 @@
 bin/
 obj/
 binary/
+Debug/
+Release/
 *.obj
 .vs
 packages
