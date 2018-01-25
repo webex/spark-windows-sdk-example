@@ -68,8 +68,8 @@ namespace KitchenSink
         {
             this.IsBusy = true;
             string clientId = "Ce0fa0ba8ddd23cb85c24d9c008eb78c92e2fd8caf5034032e41906938263ec04";
-            string clientSecret = "ac9dec8185c86d337639cdd1e113e19d96aed75aa702db48471a8a28b773d84e";
-            string redirectUri = "KitchenSink://response/";
+            string clientSecret = "9cb4fa305ab61a54e8892e2ee790afe7a8ee5493acdfd04185fb948a1b0b0b35";
+            string redirectUri = "KitchenSink://response";
             string scope = "spark:all";
 
             var auth = new OAuthAuthenticator(clientId, clientSecret, scope, redirectUri);
