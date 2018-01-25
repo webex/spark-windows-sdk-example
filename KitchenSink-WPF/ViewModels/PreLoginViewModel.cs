@@ -67,8 +67,8 @@ namespace KitchenSink
         void TryToLoginByOAuth()
         {
             this.IsBusy = true;
-            string clientId = "C6b13dd866c63ad282d89902953afd5c511a935cfe7cda688ed72efb53ba7c54e";
-            string clientSecret = "07ad817f035d80a6e250d8706b16a0d0f30c1aad70bf4c314b48fc3e2a5537b8";
+            string clientId = "Ce0fa0ba8ddd23cb85c24d9c008eb78c92e2fd8caf5034032e41906938263ec04";
+            string clientSecret = "ac9dec8185c86d337639cdd1e113e19d96aed75aa702db48471a8a28b773d84e";
             string redirectUri = "KitchenSink://response/";
             string scope = "spark:all";
 
