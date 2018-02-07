@@ -149,7 +149,7 @@ namespace KitchenSink
         {
             var spark = ApplicationController.Instance.CurSparkManager.CurSpark;
 
-            spark?.Rooms?.List(null, null, RoomType.group, r =>
+            spark?.Rooms?.List(null, null, RoomType.Group, r =>
             {
                 if (r.IsSuccess)
                 {
