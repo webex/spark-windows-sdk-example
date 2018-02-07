@@ -35,7 +35,7 @@
             </Border>
             <Button Content="SPARK ID" Grid.Row="2" Command="{Binding SelectAuthCMD}" CommandParameter="{x:Static local:AuthMethod.SparkID}"/>
             <Button Content="APP ID" Grid.Row="3" VerticalAlignment="Top"  Command="{Binding SelectAuthCMD}" CommandParameter="{x:Static local:AuthMethod.AppID}"/>
-            <TextBlock Grid.Row="4" Text="Powered by SparkSDK v0.1.0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF0099CC"/>
+            <TextBlock Grid.Row="4" Text="Powered by SparkSDK v0.1.3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF0099CC"/>
 
         </Grid>
         <Border Name="busyLayer" Background="#B0FFFFFF" Visibility="{Binding Path=IsBusy,Converter={StaticResource bool2VisConverter}}">
