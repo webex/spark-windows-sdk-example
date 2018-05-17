@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,35 +38,11 @@ namespace KitchenSink
         public RelayCommand CallCMD { get; set; }
         public RelayCommand SendFeedBackCMD { get; set; }
         public RelayCommand WaitingCallCMD { get; set; }
+        public RelayCommand ManageRoomCMD { get; set; }
+        public RelayCommand MessageCMD { get; set; }
 
 
-        private string loginInfo = string.Empty;
-        public string LoginInfo
-        {
-            get { return this.loginInfo; }
-            set
-            {
-                if (value != loginInfo)
-                {
-                    this.loginInfo = value;
-                    OnPropertyChanged("LoginInfo");
-                }
-            }
-        }
 
-        private string connInfo = string.Empty;
-        public string ConnectionInfo
-        {
-            get { return this.connInfo; }
-            set
-            {
-                if (value != connInfo)
-                {
-                    this.connInfo = value;
-                    OnPropertyChanged("ConnectionInfo");
-                }
-            }
-        }
 
         public MainViewModel()
         {
@@ -75,7 +51,8 @@ namespace KitchenSink
             InitialCallCMD = new RelayCommand(InitialCall, IfNotInCall);
             SendFeedBackCMD = new RelayCommand(SendFeedBack, IfNotInCall);
             WaitingCallCMD = new RelayCommand(WaitingCall, IfNotInCall);
-            ApplicationController.Instance.StateInfoReceived += StateInfoReceived;
+            ManageRoomCMD = new RelayCommand(ManageRoom, IfNotInCall);
+            MessageCMD = new RelayCommand(Message, IfNotInCall);
 
             GetUserInfo();
             RegistPhone();
@@ -83,49 +60,37 @@ namespace KitchenSink
 
         private void GetUserInfo()
         {
-            ApplicationController.Instance.PublishStateInfo("fetching user profile...", InfoType.LoginInfo);
+            ApplicationController.Instance.ShellViewModel.LoginInfo = "fetching user profile...";
             var sparkManager = ApplicationController.Instance.CurSparkManager;
             sparkManager.CurSpark.People.GetMe(r =>
             {
                 if (r.IsSuccess)
                 {
                     sparkManager.CurUser = (SparkSDK.Person)r.Data;
-                    ApplicationController.Instance.PublishStateInfo("login as: " + sparkManager.CurUser.DisplayName, InfoType.LoginInfo);
+                    ApplicationController.Instance.ShellViewModel.LoginInfo = "login as: " + sparkManager.CurUser.DisplayName;
                 }
                 else
                 {
-                    ApplicationController.Instance.PublishStateInfo("Fetch user profile failed", InfoType.LoginInfo);
+                    ApplicationController.Instance.ShellViewModel.LoginInfo = "Fetch user profile failed";
                 }
             });
         }
 
         private void RegistPhone()
         {
-            ApplicationController.Instance.PublishStateInfo("spark cloud connecting...", InfoType.ConnectionInfo);
+            ApplicationController.Instance.ShellViewModel.ConnectionInfo = "spark cloud connecting...";
             var sparkManager = ApplicationController.Instance.CurSparkManager;
             sparkManager.CurSpark.Phone.Register(result =>
             {
                 if (result.IsSuccess == true)
                 {
-                    ApplicationController.Instance.PublishStateInfo("spark cloud connected", InfoType.ConnectionInfo);
+                    ApplicationController.Instance.ShellViewModel.ConnectionInfo = "spark cloud connected";
                 }
                 else
                 {
-                    ApplicationController.Instance.PublishStateInfo("spark cloud failed", InfoType.ConnectionInfo);
+                    ApplicationController.Instance.ShellViewModel.ConnectionInfo = "spark cloud failed";
                 }
             });
-        }
-
-        private void StateInfoReceived(object sender, EventArgs<Tuple<InfoType, string>> e)
-        {
-            if (e.Value.Item1 == InfoType.ConnectionInfo)
-            {
-                this.ConnectionInfo = e.Value.Item2;
-            }
-            if (e.Value.Item1 == InfoType.LoginInfo)
-            {
-                this.LoginInfo = e.Value.Item2;
-            }
         }
 
         private void WaitingCall(object o)
@@ -145,6 +110,15 @@ namespace KitchenSink
             ApplicationController.Instance.ChangeState(State.IntiateCall);
         }
 
+        private void ManageRoom(object o)
+        {
+            ApplicationController.Instance.ChangeState(State.ManageRoom);
+        }
+        private void Message(object o)
+        {
+            ApplicationController.Instance.ChangeState(State.Message);
+        }
+
         private void VedioAudioSetup(object o)
         {
             ApplicationController.Instance.ChangeState(State.VideoAudioSetup);
@@ -158,6 +132,7 @@ namespace KitchenSink
         {
             var sparkManager = ApplicationController.Instance.CurSparkManager;
             sparkManager.CurAuthenticator.Deauthorize();
+            ApplicationController.Instance.AppLogOutput("Logout.");
             ApplicationController.Instance.ChangeState(State.PreLogin);
         }
 

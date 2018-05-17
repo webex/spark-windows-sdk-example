@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:KitchenSink"
              xmlns:sys ="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="640">
+             d:DesignHeight="700" d:DesignWidth="840">
     <UserControl.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="Gray"/>

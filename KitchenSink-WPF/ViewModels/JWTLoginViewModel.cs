@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -47,19 +47,6 @@ namespace KitchenSink
                 }
             }
         }
-        private string eventInfo;
-        public string EventInfo
-        {
-            get
-            {
-                return this.eventInfo;
-            }
-            set
-            {
-                this.eventInfo = value;
-                OnPropertyChanged("EventInfo");
-            }
-        }
 
         public RelayCommand AuthenticateByJWTCMD { get; set; }
 
@@ -95,12 +82,12 @@ namespace KitchenSink
                 this.IsBusy = false;
                 if (result.IsSuccess)
                 {
-                    output("authorize success!");
+                    ApplicationController.Instance.AppLogOutput("authorize success!");
                     ApplicationController.Instance.ChangeState(State.Main);
                 }
                 else
                 {
-                    output("authorize failed!");
+                    ApplicationController.Instance.AppLogOutput("authorize failed!");
                 }
             });
 
@@ -109,11 +96,6 @@ namespace KitchenSink
         bool CanAuthenticateByJWT(object ignore)
         {
             return !string.IsNullOrEmpty(this.JwtStr);
-        }
-
-        private void output(String format, params object[] args)
-        {
-            EventInfo = string.Format(format, args);
         }
 
     }

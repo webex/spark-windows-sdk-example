@@ -33,7 +33,7 @@
     </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -73,13 +73,11 @@
       <HintPath>..\solutions\KitchenSink\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="spark-client-framework-dot-net, Version=1.0.6614.22673, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.1.6\lib\net452\spark-client-framework-dot-net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="spark-client-framework-dot-net, Version=1.0.6710.19493, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.2.0\lib\net452\spark-client-framework-dot-net.dll</HintPath>
     </Reference>
     <Reference Include="SparkSDK, Version=0.1.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.1.6\lib\net452\SparkSDK.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.2.0\lib\net452\SparkSDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -113,6 +111,7 @@
     <Compile Include="Controls\FixedAspectWinFormsHost.cs" />
     <Compile Include="Common\TextListConverter.cs" />
     <Compile Include="Models\DeviceData.cs" />
+    <Compile Include="Models\TimelineMessage.cs" />
     <Compile Include="Models\RecentContacts.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -120,13 +119,18 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SparkManager.cs" />
+    <Compile Include="Utils\Mime.cs" />
+    <Compile Include="Utils\StringExtention.cs" />
     <Compile Include="ViewModels\CallViewModel.cs" />
     <Compile Include="ViewModels\FeedBackViewModel.cs" />
     <Compile Include="ViewModels\InitiateCallViewModel.cs" />
     <Compile Include="ViewModels\JWTLoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MessageSessionViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\OAuthLoginViewModel.cs" />
     <Compile Include="ViewModels\PreLoginViewModel.cs" />
+    <Compile Include="ViewModels\RoomManageViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\VideoAudioSetupViewModel.cs" />
     <Compile Include="ViewModels\VideoCodecLicenseViewModel.cs" />
@@ -147,6 +151,12 @@
     <Compile Include="Views\JWTLoginView.xaml.cs">
       <DependentUpon>JWTLoginView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MessageSessionView.xaml.cs">
+      <DependentUpon>MessageSessionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MessageView.xaml.cs">
+      <DependentUpon>MessageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OAuthLoginView.xaml.cs">
       <DependentUpon>OAuthLoginView.xaml</DependentUpon>
     </Compile>
@@ -154,6 +164,9 @@
       <DependentUpon>PreLoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RatingCellControl.xaml.cs" />
+    <Compile Include="Views\RoomManageView.xaml.cs">
+      <DependentUpon>RoomManageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VideoAudioSetupView.xaml.cs">
       <DependentUpon>VideoAudioSetupView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +212,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\MessageSessionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\OAuthLoginView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -210,6 +231,10 @@
     <Page Include="Controls\RatingCellControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\RoomManageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VideoAudioSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -246,7 +271,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SparkLogo.png">
@@ -283,13 +310,18 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\message.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.1.6\build\Cisco.Spark.WindowsSDK.targets" Condition="Exists('..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.1.6\build\Cisco.Spark.WindowsSDK.targets')" />
+  <Import Project="..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.2.0\build\Cisco.Spark.WindowsSDK.targets" Condition="Exists('..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.2.0\build\Cisco.Spark.WindowsSDK.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.1.6\build\Cisco.Spark.WindowsSDK.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.1.6\build\Cisco.Spark.WindowsSDK.targets'))" />
+    <Error Condition="!Exists('..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.2.0\build\Cisco.Spark.WindowsSDK.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.0.2.0\build\Cisco.Spark.WindowsSDK.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

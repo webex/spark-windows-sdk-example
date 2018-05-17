@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,16 @@ namespace KitchenSink
         {
             InitializeComponent();
             ApplicationController.Instance.RegistWorkSpace(WorkSpace.Main, this.MainArea);
+        }
+
+        private void SparkSDKLogOutput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SparkSDKLogOutput.ScrollToEnd();
+        }
+
+        private void AppLogOutput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            AppLogOutput.ScrollToEnd();
         }
     }
 }

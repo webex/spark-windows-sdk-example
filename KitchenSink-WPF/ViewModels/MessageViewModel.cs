@@ -30,9 +30,10 @@ using SparkSDK;
 
 namespace KitchenSink
 {
-    public class InitiateCallViewModel : ViewModelBase
+    public class MessageViewModel : ViewModelBase
     {
-        public RelayCommand CallCMD { get; set; }
+        public RelayCommand SendDirectMessageCMD { get; set; }
+        public RelayCommand SendRoomMessageCMD { get; set; }
 
         public string Callee
         {
@@ -87,11 +88,11 @@ namespace KitchenSink
             set
             {
                 this.selectedRoom = value;
-                if (SelectedRoom != null)
+                if (this.selectedRoom != null)
                 {
                     ApplicationController.Instance.CurSparkManager.CurCalleeAddress = this.selectedRoom.Id;
-                    ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.CallViewDial;
-                    ApplicationController.Instance.ChangeState(State.Call);
+                    ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.MessageSessionView;
+                    ApplicationController.Instance.ChangeState(State.MessageSession);
 
                 }
             }
@@ -123,9 +124,9 @@ namespace KitchenSink
                 this.selectedPerson = value;
                 if (this.selectedPerson != null)
                 {
-                    ApplicationController.Instance.CurSparkManager.CurCalleeAddress = this.selectedPerson.Id;
-                    ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.CallViewDial;
-                    ApplicationController.Instance.ChangeState(State.Call);
+                    ApplicationController.Instance.CurSparkManager.CurCalleeAddress = this.selectedPerson.Emails[0];
+                    ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.MessageSessionView;
+                    ApplicationController.Instance.ChangeState(State.MessageSession);
 
                 }
             }
@@ -195,23 +196,37 @@ namespace KitchenSink
                 });
             }
         }
-        public InitiateCallViewModel()
+        public MessageViewModel()
         {
-            CallCMD = new RelayCommand(BeginCall, CanCall);
+            SendDirectMessageCMD = new RelayCommand(SendDirectMessage, CanMessage);
+            SendRoomMessageCMD = new RelayCommand(SendRoomMessage);
             FetchRooms();
             FetchRecentContacts();
         }
 
-        private void BeginCall(object o)
+        private void SendDirectMessage(object o)
         {
-            ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.CallViewDial;
-            ApplicationController.Instance.ChangeState(State.Call);
+            ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.MessageSessionView;
+            ApplicationController.Instance.ChangeState(State.MessageSession);
         }
 
-        private bool CanCall(object o)
+        private bool CanMessage(object o)
         {
             return !string.IsNullOrEmpty(this.Callee);
-        }       
+        }
+
+
+        private void SendRoomMessage(object o)
+        {
+            if (SelectedRoom != null)
+            {
+                ApplicationController.Instance.CurSparkManager.CurCalleeAddress = this.selectedRoom.Id;
+                ApplicationController.Instance.ChangeViewCmd = ChangeViewCmd.MessageSessionView;
+                ApplicationController.Instance.ChangeState(State.MessageSession);
+
+            }
+        }
+
 
     }
 }

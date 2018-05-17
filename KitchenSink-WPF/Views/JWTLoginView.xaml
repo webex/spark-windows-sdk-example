@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KitchenSink"
         mc:Ignorable="d"
-         d:DesignHeight="450" d:DesignWidth="800">
+         d:DesignHeight="700" d:DesignWidth="1000">
     <UserControl.DataContext>
         <local:JWTLoginViewModel></local:JWTLoginViewModel>
     </UserControl.DataContext>
@@ -67,8 +67,6 @@
 
                 </TextBox>
                 <Button Grid.Row="2"  x:Name="btJwtLogin"  Content="Login" Margin="50 2 50 2" Command="{Binding AuthenticateByJWTCMD}" VerticalAlignment="Bottom"/>
-                <TextBlock Grid.Row="3" x:Name="lblState" Margin="30,10,30,2" Text="{Binding EventInfo}" Foreground="Black" TextAlignment="Center"/>
-
             </Grid>
         </Grid>
         <Border Name="busyLayer" Background="#B0FFFFFF"  Visibility="{Binding Path=IsBusy,Converter={StaticResource bool2VisConverter}}"> 

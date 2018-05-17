@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,25 +38,12 @@ namespace KitchenSink
         #endregion
 
         #region Properties
-
+        public ShellViewModel ShellViewModel { get; set; }
         public SparkManager CurSparkManager { get;  set; }
 
         public CallView CurCallView { get; set; }
         public ChangeViewCmd ChangeViewCmd { get; set; }
         
-        #endregion
-
-        #region Events
-        public event EventHandler<EventArgs<Tuple<InfoType,string>>> StateInfoReceived;
-
-        public void PublishStateInfo(string stateInfo,InfoType infoType)
-        {
-            if (this.StateInfoReceived != null)
-            {
-                this.StateInfoReceived(this, new EventArgs<Tuple<InfoType,string>>(new Tuple<InfoType, string>(infoType,stateInfo)));
-            }
-        }
-
         #endregion
 
         #region singleton
@@ -129,6 +116,15 @@ namespace KitchenSink
                     case State.VideoCodecLicense:
                         this.ShowView(new VideoCodecLicenseView(), WorkSpace.Main);
                         break;
+                    case State.ManageRoom:
+                        this.ShowView(new RoomManageView(), WorkSpace.Right);
+                        break;
+                    case State.Message:
+                        this.ShowView(new MessageView(), WorkSpace.Right);
+                        break;
+                    case State.MessageSession:
+                        this.ShowView(new MessageSessionView(), WorkSpace.Main);
+                        break;
 
                 }
             });
@@ -140,6 +136,12 @@ namespace KitchenSink
             if (this.dicWorkSpaces.ContainsKey(s))
                 this.dicWorkSpaces[s].Child = view;
         }
+
+        public void AppLogOutput(String format, params object[] args)
+        {
+            ShellViewModel.output(format, args);
+        }
+
         #endregion
 
     }

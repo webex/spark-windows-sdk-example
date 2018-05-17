@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,11 +35,113 @@ namespace KitchenSink
         private IntPtr pbHandle;
         private Action refreshViewMtd;
 
+        public List<string> DefaultVideoBandWidths { get; set; }
+        public List<string> DefaultShareBandWidths { get; set; }
+        public List<string> DefaultAudioBandWidths { get; set; }
+
         public DeviceData DeviceData
         {
             get;
             set;
         }
+
+        public IList<SparkSDK.LogLevel> LogLevels
+        {
+            get
+            {
+                // Will result in a list
+                return Enum.GetValues(typeof(SparkSDK.LogLevel)).Cast<SparkSDK.LogLevel>().ToList<SparkSDK.LogLevel>();
+            }
+        }
+        public SparkSDK.LogLevel LogLevel
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.ConsoleLogger;
+            }
+            set
+            {
+                ApplicationController.Instance.CurSparkManager.CurSpark.ConsoleLogger = value;
+            }
+        }
+
+        public string VideoBandWidth
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.Phone.VideoMaxBandwidth.ToString();
+            }
+            set
+            {
+                ApplicationController.Instance.CurSparkManager.CurSpark.Phone.VideoMaxBandwidth = Convert.ToUInt32(value);
+            }
+        }
+        public string NewVideoBandWidth
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.Phone.VideoMaxBandwidth.ToString();
+            }
+            set
+            {
+                if (value.Length > 0)
+                {
+                    ApplicationController.Instance.CurSparkManager.CurSpark.Phone.VideoMaxBandwidth = Convert.ToUInt32(value);
+                }                
+            }
+        }
+        public string ShareBandWidth
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.Phone.ShareMaxBandwidth.ToString();
+            }
+            set
+            {
+                ApplicationController.Instance.CurSparkManager.CurSpark.Phone.ShareMaxBandwidth = Convert.ToUInt32(value);
+            }
+        }
+        public string NewShareBandWidth
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.Phone.ShareMaxBandwidth.ToString();
+            }
+            set
+            {
+                if (value.Length > 0)
+                {
+                    ApplicationController.Instance.CurSparkManager.CurSpark.Phone.ShareMaxBandwidth = Convert.ToUInt32(value);
+                }
+            }
+        }
+
+        public string AudioBandWidth
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.Phone.AudioMaxBandwidth.ToString();
+            }
+            set
+            {
+                ApplicationController.Instance.CurSparkManager.CurSpark.Phone.AudioMaxBandwidth = Convert.ToUInt32(value);
+            }
+        }
+        public string NewAudioBandWidth
+        {
+            get
+            {
+                return ApplicationController.Instance.CurSparkManager.CurSpark.Phone.AudioMaxBandwidth.ToString();
+            }
+            set
+            {
+                if (value.Length > 0)
+                {
+                    ApplicationController.Instance.CurSparkManager.CurSpark.Phone.AudioMaxBandwidth = Convert.ToUInt32(value);
+                }
+            }
+        }
+
         private bool ifClosePreview = false;
         public bool IfClosePreview
         {
@@ -123,6 +225,19 @@ namespace KitchenSink
         {
             this.spark = ApplicationController.Instance.CurSparkManager.CurSpark;
             DeviceData = new DeviceData(this.spark);
+
+            DefaultAudioBandWidths = new List<string>();
+            DefaultAudioBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidthAudio).ToString());
+
+            DefaultVideoBandWidths = new List<string>();
+            DefaultVideoBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidth90p).ToString());
+            DefaultVideoBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidth180p).ToString());
+            DefaultVideoBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidth360p).ToString());
+            DefaultVideoBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidth720p).ToString());
+            DefaultVideoBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidth1080p).ToString());
+
+            DefaultShareBandWidths = new List<string>();
+            DefaultShareBandWidths.Add(((uint)SparkSDK.Phone.DefaultBandwidth.MaxBandwidthSession).ToString());
         }
 
         public void OnViewClosed()

@@ -38,15 +38,13 @@ using System.Windows.Shapes;
 namespace KitchenSink
 {
     /// <summary>
-    /// Interaction logic for InitiateCall.xaml
+    /// Interaction logic for RoomManageView.xaml
     /// </summary>
-    public partial class InitiateCallView : UserControl
+    public partial class RoomManageView : UserControl
     {
-        public InitiateCallView( )
+        public RoomManageView()
         {
             InitializeComponent();
         }
-
-       
     }
 }

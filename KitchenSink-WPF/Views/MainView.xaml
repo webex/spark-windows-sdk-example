@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KitchenSink"
         mc:Ignorable="d"
-        d:DesignHeight="450" d:DesignWidth="800" >
+        d:DesignHeight="700" d:DesignWidth="1000">
     <UserControl.DataContext>
         <local:MainViewModel/>
     </UserControl.DataContext>
@@ -22,26 +22,18 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="20*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <DockPanel Grid.RowSpan="6" Grid.Column="0" >
+            <DockPanel Grid.Column="0" >
                 <StackPanel>
-                    <Button Content="Video/Audio setup" Width="150" Margin="0,2" FontSize="10" Padding="8" Command="{Binding VedioAudioSetupCMD}"/>
-                    <Button Content="Initiate call" Width="150" Margin="0,2" FontSize="10" Padding="8" Command="{Binding InitialCallCMD}"/>
-                    <Button Content="Waiting call" Width="150"  Margin="0,2" FontSize="10" Padding="8" Command="{Binding WaitingCallCMD}"/>
-                    <Button Content="Send feedback" Width="150" Margin="0,2" FontSize="10" Padding="8" Command="{Binding SendFeedBackCMD}"/>
-                    <Button Content="Logout" Width="150" Margin="0,2" FontSize="10" Padding="8" Command="{Binding LogoutCMD}"/>
-                    <!--<Button Content="Call" Margin="0,2" FontSize="10" Padding="8" Command="{Binding LogoutCMD}"/>-->
+                    <Button Content="Video/Audio setup" Width="150" Margin="0,2" FontSize="13" Padding="8" Command="{Binding VedioAudioSetupCMD}"/>
+                    <Button Content="Message" Width="150" Margin="0,2" FontSize="13" Padding="8" Command="{Binding MessageCMD}"/>
+                    <Button Content="Initiate call" Width="150" Margin="0,2" FontSize="13" Padding="8" Command="{Binding InitialCallCMD}"/>
+                    <Button Content="Waiting call" Width="150"  Margin="0,2" FontSize="13" Padding="8" Command="{Binding WaitingCallCMD}"/>
+                    <Button Content="Manage room" Width="150" Margin="0,2" FontSize="13" Padding="8" Command="{Binding ManageRoomCMD}"/>
+                    <Button Content="Send feedback" Width="150" Margin="0,2" FontSize="13" Padding="8" Command="{Binding SendFeedBackCMD}"/>
+                    <Button Content="Logout" Width="150" Margin="0,2" FontSize="13" Padding="8" Command="{Binding LogoutCMD}"/>
                 </StackPanel>
             </DockPanel>
-            <Border Name="rightArea"  Grid.Row="0" Grid.Column="1" Padding="10,2,10,5"></Border>
-            <!--<ContentControl Grid.Row="0" Grid.Column="1" Content="{Binding}" Name="ContentRight"/>-->
-            <TextBlock x:Name="loginStateBar" Grid.Row="1" Grid.Column="1" TextAlignment="Center" Text="{Binding Path=LoginInfo}"/>
-            <TextBlock x:Name="ConnectStateBar" Grid.Row="2" Grid.Column="1" TextAlignment="Center" Text="{Binding Path=ConnectionInfo}"/>
-
+            <Border Name="rightArea" Grid.Column="1" Padding="10,2,10,5"></Border>
         </Grid>
     </Border>
 

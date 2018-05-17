@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,88 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using SparkSDK;
 
 namespace KitchenSink
 {
-    public class ShellViewModel
+    public class ShellViewModel: ViewModelBase, SparkSDK.ILogger
     {
-       
+        private string loginInfo = string.Empty;
+        public string LoginInfo
+        {
+            get { return this.loginInfo; }
+            set
+            {
+                if (value != loginInfo)
+                {
+                    this.loginInfo = value;
+                    OnPropertyChanged("LoginInfo");
+                }
+            }
+        }
+
+        private string connInfo = string.Empty;
+        public string ConnectionInfo
+        {
+            get { return this.connInfo; }
+            set
+            {
+                if (value != connInfo)
+                {
+                    this.connInfo = value;
+                    OnPropertyChanged("ConnectionInfo");
+                }
+            }
+        }
+
+        private string appLogOutput;
+        public string AppLogOutput
+        {
+            get
+            {
+                return this.appLogOutput;
+            }
+            set
+            {
+                this.appLogOutput = value;
+                OnPropertyChanged("AppLogOutput");
+            }
+        }
+
+        private string sdkLogOutput;
+        public string SDKLogOutput
+        {
+            get
+            {
+                return this.sdkLogOutput;
+            }
+            set
+            {
+                this.sdkLogOutput = value;
+                OnPropertyChanged("SDKLogOutput");
+            }
+        }
+        public void Log(string msg)
+        {
+            SDKLogOutput += msg + "\n";
+        }
+        public void output(string format, params object[] args)
+        {
+            AppLogOutput += string.Format("{0,-19}", $"{DateTime.UtcNow}") + string.Format(format, args) + "\n";
+        }
+
+        public void ShowUserInfo(string info)
+        {
+            LoginInfo = info;
+        }
+        public void ShowConnectionInfo(string info)
+        {
+            ConnectionInfo = info;
+        }
+
+        public ShellViewModel()
+        {
+            ApplicationController.Instance.ShellViewModel = this;
+        }
     }
 }

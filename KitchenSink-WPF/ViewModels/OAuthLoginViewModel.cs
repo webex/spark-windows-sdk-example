@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -46,8 +46,10 @@ namespace KitchenSink
                 OAuthAuthenticator auth = ApplicationController.Instance.CurSparkManager.CurAuthenticator as OAuthAuthenticator;
                 if (auth != null)
                 {
+                    output($"AuthorizationUrl: {auth.AuthorizationUrl}");
                     return auth.AuthorizationUrl;
                 }
+                output($"Get AuthorizationUrl failed. OAuth authenticator is null.");
                 return "";
             }
         }
@@ -81,20 +83,6 @@ namespace KitchenSink
             }
         }
 
-        private string eventInfo;
-        public string EventInfo
-        {
-            get
-            {
-                return this.eventInfo;
-            }
-            set
-            {
-                this.eventInfo = value;
-                OnPropertyChanged("EventInfo");
-            }
-        }
-
         public OAuthLoginViewModel()
         {
             BackToLoginViewCommand = new RelayCommand(BackToLoginView);
@@ -105,6 +93,7 @@ namespace KitchenSink
             GettingAuthCode = false;
             IsBusy = true;
 
+            output($"begin to authorize with auth code.");
             OAuthAuthenticator auth = ApplicationController.Instance.CurSparkManager.CurAuthenticator as OAuthAuthenticator;
             auth?.Authorize(authCode, result =>
             {
@@ -127,6 +116,7 @@ namespace KitchenSink
             {
                 int start = uri.IndexOf("code=");
                 string authCode = uri.Substring(start + "code=".Length, 64);
+                output($"Get the auth code: {authCode}");
                 AuthorizeByOAuthAccessToken(authCode);
             }
         }
@@ -146,7 +136,7 @@ namespace KitchenSink
 
         private void output(String format, params object[] args)
         {
-            EventInfo = string.Format(format, args);
+            ApplicationController.Instance.AppLogOutput(format, args);
         }
     }
 }

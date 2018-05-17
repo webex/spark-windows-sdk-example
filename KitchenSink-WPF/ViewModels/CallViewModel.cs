@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 using SparkSDK;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +55,8 @@ namespace KitchenSink
 
         public RelayCommand BackCommand { get; set; }
         public RelayCommand EndCallCMD { get; set; }
-        public RelayCommand KeyboardCMD { get; set; }
+        public RelayCommand KeyboardCMD { get; set; }      
+        public RelayCommand StopShareCMD { get; set; }
 
         public RelayCommand DtmfCMD { get; set; }
 
@@ -189,23 +191,6 @@ namespace KitchenSink
             }
         }
 
-        private bool ifShareScreen = false;
-        public bool IfShareSreen
-        {
-            get
-            {
-                return this.ifShareScreen;
-            }
-            set
-            {
-                if (value != ifShareScreen)
-                {
-                    this.ifShareScreen = value;
-                    OnPropertyChanged("IfShareScreen");
-                }
-            }
-        }
-
         private bool ifIncludeLog = false;
         public bool IfIncludeLog
         {
@@ -245,18 +230,103 @@ namespace KitchenSink
             }
         }
 
-        private string eventInfo;
-        public string EventInfo
+        private ObservableCollection<ShareSource> shareSourceList;
+        public ObservableCollection<ShareSource> ShareSourceList
         {
             get
             {
-                return this.eventInfo;
+                return this.shareSourceList;
             }
             set
             {
-                this.eventInfo = value;
-                OnPropertyChanged("EventInfo");
+                this.shareSourceList = value;
+                OnPropertyChanged("ShareSourceList");
             }
+        }
+
+        private ShareSource selectedSource;
+        public ShareSource SelectedSource
+        {
+            get
+            {
+                return this.selectedSource;
+            }
+            set
+            {
+                this.selectedSource = value;
+                if (this.selectedSource != null)
+                {
+                    this.currentCall.StartShare(this.selectedSource.SourceId, r =>
+                    {
+                        if (!r.IsSuccess)
+                        {
+                            output($"Start share failed! Error: {r.Error?.ErrorCode.ToString()} {r.Error?.Reason}");
+                        }
+                        IfShowStopShareButton = true;
+                    });
+                }
+            }
+        }
+
+        public void FetchShareSources()
+        {
+            ShareSourceList.Clear();
+            if (this.currentCall != null)
+            {
+                this.currentCall.FetchShareSources(ShareSourceType.Desktop, result =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (result.IsSuccess)
+                        {
+                            foreach (var i in result.Data)
+                                ShareSourceList.Add(i);
+                        }
+                    });
+
+                });
+
+                this.currentCall.FetchShareSources(ShareSourceType.Application, r =>
+                {
+                    if (r.IsSuccess)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            if (r.IsSuccess)
+                            {
+                                foreach (var i in r.Data)
+                                    ShareSourceList.Add(i);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        private void StopShare(object o)
+        {
+            if (currentCall == null)
+            {
+                return;
+            }
+
+            if (!currentCall.IsSendingShare)
+            {
+                return;
+            }
+
+            currentCall.StopShare(r=>
+            {
+                if (r.IsSuccess)
+                {
+                    IfShowStopShareButton = false;
+                }
+                else
+                {
+
+                }
+
+            });
         }
 
         #region Rating
@@ -331,7 +401,24 @@ namespace KitchenSink
                 }
             }
         }
-        
+
+        private bool ifShowStopShareButton = false;
+        public bool IfShowStopShareButton
+        {
+            get
+            {
+                return this.ifShowStopShareButton;
+            }
+            set
+            {
+                if (value != ifShowStopShareButton)
+                {
+                    this.ifShowStopShareButton = value;
+                    OnPropertyChanged("IfShowStopShareButton");
+                }
+            }
+        }
+
         #endregion
 
         #endregion
@@ -345,7 +432,9 @@ namespace KitchenSink
             SendFeedBackCMD = new RelayCommand(this.SendFeedBack,this.CanSendFeedBack);
             KeyboardCMD = new RelayCommand(ShowHideKeyboard);
             DtmfCMD = new RelayCommand(SendDTMF);
+            StopShareCMD = new RelayCommand(StopShare);
             spark = ApplicationController.Instance.CurSparkManager.CurSpark;
+            shareSourceList = new ObservableCollection<ShareSource>();
         }
 
         #region method
@@ -451,7 +540,7 @@ namespace KitchenSink
 
         private void output(String format, params object[] args)
         {
-            EventInfo = string.Format(format, args);
+            ApplicationController.Instance.AppLogOutput(format, args);
         }
 
         private void UpdateRecentContactsStore()
@@ -478,6 +567,7 @@ namespace KitchenSink
             ApplicationController.Instance.CurCallView = null;
             ApplicationController.Instance.ChangeState(State.Main);
         }
+
         #endregion
 
         #region CallEvents
@@ -581,7 +671,7 @@ namespace KitchenSink
             }
             else if (obj is CallMembershipSendingShareEvent)
             {
-                if (obj.CallMembership.IsSendingVideo)
+                if (obj.CallMembership.IsSendingShare)
                 {
                     output($"{obj.CallMembership.Email} sending share");
                 }
@@ -699,6 +789,18 @@ namespace KitchenSink
                 else
                 {
                     output("local mute audio");
+                }
+            }
+            else if (mediaChgEvent is SendingShareEvent)
+            {
+                var sendingShareEvent = mediaChgEvent as SendingShareEvent;
+                if (sendingShareEvent.IsSending)
+                {
+                    output("local is sending share");
+                }
+                else
+                {
+                    output("local share stoped.");
                 }
             }
             else if (mediaChgEvent is ReceivingVideoEvent)
@@ -829,4 +931,6 @@ namespace KitchenSink
         }
         #endregion
     }
+
+
 }

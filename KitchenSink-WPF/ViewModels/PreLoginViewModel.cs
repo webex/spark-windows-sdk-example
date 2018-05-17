@@ -1,5 +1,5 @@
 ﻿#region License
-// Copyright (c) 2016-2017 Cisco Systems, Inc.
+// Copyright (c) 2016-2018 Cisco Systems, Inc.
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -75,12 +75,14 @@ namespace KitchenSink
             var auth = new OAuthAuthenticator(clientId, clientSecret, scope, redirectUri);
             var sparkManager = new SparkManager(auth);
             ApplicationController.Instance.CurSparkManager = sparkManager;
-         
+            sparkManager.CurSpark.Logger = ApplicationController.Instance.ShellViewModel;
+            ApplicationController.Instance.AppLogOutput("check if authorized");
             auth.Authorized(r =>
             {
                 this.IsBusy = false;
                 if (r.IsSuccess)
                 {
+                    ApplicationController.Instance.AppLogOutput("authorize success!");
                     ApplicationController.Instance.ChangeState(State.Main);
                 }
                 else
@@ -96,11 +98,14 @@ namespace KitchenSink
             var auth = new JWTAuthenticator();
             var sparkManager = new SparkManager(auth);
             ApplicationController.Instance.CurSparkManager = sparkManager;
+            sparkManager.CurSpark.Logger = ApplicationController.Instance.ShellViewModel;
+            ApplicationController.Instance.AppLogOutput("check if authorized");
             auth.Authorized(r =>
             {
                 this.IsBusy = false;
                 if (r.IsSuccess)
                 {
+                    ApplicationController.Instance.AppLogOutput("authorize success!");
                     ApplicationController.Instance.ChangeState(State.Main);
                 }
                 else

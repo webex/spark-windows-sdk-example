@@ -7,8 +7,7 @@
         xmlns:local="clr-namespace:KitchenSink"
         xmlns:sys ="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        d:DesignHeight="450" d:DesignWidth="800"
-        >
+        d:DesignHeight="700" d:DesignWidth="1000">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,19 +22,31 @@
                 <Button DockPanel.Dock="Left" x:Name="Back"  Content="Back" Grid.Row="0" Width="50" Height="20" HorizontalAlignment="Left" Command="{Binding BackCommand}" />
                 <TextBlock Text="{Binding CallStatus}" TextAlignment="Center"/>
             </DockPanel>
-            <TextBlock DockPanel.Dock="Bottom" Margin="10,10,10,0" VerticalAlignment="Bottom" Text="{Binding EventInfo}" TextAlignment="Center"/>
             <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="266">
                 <CheckBox x:Name="cbSndVideo" Content="Sending video" Margin="10" IsChecked="{Binding IfSendVedio,UpdateSourceTrigger=PropertyChanged}"  />
                 <CheckBox x:Name="cbSndAudio" Content="Sending audio" Margin="10" IsChecked="{Binding IfSendAudio,UpdateSourceTrigger=PropertyChanged}"  />
                 <CheckBox x:Name="cbRcvVideo" Content="Receiving video" Margin="10" IsChecked="{Binding IfReceiveVedio,UpdateSourceTrigger=PropertyChanged}" />
                 <CheckBox x:Name="cbRcvAudio" Content="Receiving audio" Margin="10" IsChecked="{Binding IfReceiveAudio,UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Margin="10,0">Select Share Content:</TextBlock>
+                <ComboBox x:Name="combShareSourceList" Margin="10,0" Text="Select Share Source" ItemsSource="{Binding ShareSourceList}" SelectedItem="{Binding SelectedSource}" DropDownOpened="combShareSourceList_DropDownOpened">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="10,0" Text="{Binding SourceId}" Width="40"/>
+                                <TextBlock Margin="10,0" Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
+                <Button Content="Stop Share" Margin="10" Command="{Binding StopShareCMD}" Visibility="{Binding IfShowStopShareButton, Converter={StaticResource bool2VisibilityConverter}}"/>
+                    
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Button x:Name="btEndCall" Content="End Call" Margin="10" Command="{Binding EndCallCMD}" />
+                    <Button x:Name="btEndCall" Content="End Call" Margin="10" Command="{Binding EndCallCMD}"/>
                     <Button Grid.Row="1" Content="Keyboard" Margin="10" Command="{Binding KeyboardCMD}"/>
                 </Grid>
             </StackPanel>
