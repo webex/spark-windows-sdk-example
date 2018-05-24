@@ -106,7 +106,7 @@ namespace KitchenSink
 
         private void FetchRooms()
         {
-            spark?.Rooms?.List(null, null, RoomType.Group, r =>
+            spark?.Rooms?.List(null, null, RoomType.Group, RoomSortType.ByLastActivity, r =>
             {
                 if (r.IsSuccess)
                 {
