@@ -9,7 +9,7 @@ Kitchen Sink is a developer friendly sample implementation of Spark client SDK a
 - [License](#license)
 
 ## Setup
-This application is built with **Vistual Studio 2015** and requires:
+This application is built with **Vistual Studio 2017** and requires:
 - .NET Framework 4.5.2 or higher version
 - Win8 or Win10
 
