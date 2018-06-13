@@ -19,7 +19,7 @@ echo remove old Cisco.Spark.WindowsSDK.%SDKNuGetPackage%
 rd /S /Q solutions\KitchenSink\packages\Cisco.Spark.WindowsSDK.%SDKNuGetPackage%
 
 echo install new Cisco.Spark.WindowsSDK.%SDKNuGetPackage% from last successful build package from jenkins sdk develop branch build.
-bin\nuget.exe install Cisco.Spark.WindowsSDK -Source %~d0%~p0\ -Version %SDKNuGetPackage% -PreRelease -SolutionDirectory solutions\KitchenSink\ -Verbosity detailed
+bin\nuget.exe install Cisco.Spark.WindowsSDK -Source "%cd%"\bin\ -Version %SDKNuGetPackage% -PreRelease -SolutionDirectory solutions\KitchenSink\ -Verbosity detailed
 if not %errorlevel% == 0 ( 
 	echo install new Cisco.Spark.WindowsSDK.%SDKNuGetPackage% failed!
 	goto EXIT 
