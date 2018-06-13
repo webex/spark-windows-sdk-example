@@ -9,6 +9,21 @@ echo %DEVENVDIR%
 pushd .
 bin\nuget.exe restore solutions\KitchenSink\KitchenSink.sln -NonInteractive
 
+set SDKNuGetPackage=Cisco.Spark.WindowsSDK.1.4.0-EFT01
+echo SDKNuGetPackage is %SDKNuGetPackage%
+echo copy scf libraries to solutions\KitchenSink\packages\%SDKNuGetPackage%\
+copy /y spark-client-framework\scfLibrary\Release\*.dll solutions\KitchenSink\packages\%SDKNuGetPackage%\
+if not %errorlevel% == 0 ( 
+	echo update scf libraries failed.
+	goto EXIT 
+)
+echo copy SparkSDK.dll to solutions\KitchenSink\packages\%SDKNuGetPackage%\
+copy /y sdk\binary\[build]\bin\x86\Release\SparkSDK.dll solutions\KitchenSink\packages\%SDKNuGetPackage%\
+if not %errorlevel% == 0 ( 
+	echo update SparkSDK.dll failed.
+	goto EXIT 
+)
+
 REM "%MSBUILDDIR%\msbuild.exe" solutions\KitchenSink\KitchenSink.sln /t:Rebuild /p:Configuration="Debug" /p:Platform="x86"
 "%DEVENVDIR%\devenv" solutions\KitchenSink\KitchenSink.sln /Rebuild "Debug|x86"
 if not %errorlevel% == 0 ( 
