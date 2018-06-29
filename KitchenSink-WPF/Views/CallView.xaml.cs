@@ -66,6 +66,64 @@ namespace KitchenSink
             }
         }
 
+        public IntPtr RemoteAux1Handle
+        {
+            get
+            {
+                return pbRemoteAux1.Handle;
+            }
+        }
+
+        public string RemoteAux1Avartar
+        {
+            set
+            {
+                pbRemoteAux1.ImageLocation = value;
+            }
+        }
+        public IntPtr RemoteAux2Handle
+        {
+            get
+            {
+                return pbRemoteAux2.Handle;
+            }
+        }
+        public string RemoteAux2Avartar
+        {
+            set
+            {
+                pbRemoteAux2.ImageLocation = value;
+            }
+        }
+        public IntPtr RemoteAux3Handle
+        {
+            get
+            {
+                return pbRemoteAux3.Handle;
+            }
+        }
+        public string RemoteAux3Avartar
+        {
+            set
+            {
+                pbRemoteAux3.ImageLocation = value;
+            }
+        }
+        public IntPtr RemoteAux4Handle
+        {
+            get
+            {
+                return pbRemoteAux4.Handle;
+            }
+        }
+        public string RemoteAux4Avartar
+        {
+            set
+            {
+                pbRemoteAux4.ImageLocation = value;
+            }
+        }
+
         public CallView()
         {
             InitializeComponent();
@@ -85,6 +143,7 @@ namespace KitchenSink
                 return;
             }
             viewModel.UpdateLocalVideoView();
+            viewModel.UpdateRemoteAllAuxVideoView();
         }
 
         private void PbRemoteVideo_SizeChanged(object sender, EventArgs e)
@@ -140,6 +199,11 @@ namespace KitchenSink
                 this.pbRemoteVideo.Refresh();
                 this.pblocalVideo.Refresh();
                 this.pbShareScreenVideo.Refresh();
+
+                this.pbRemoteAux1.Refresh();
+                this.pbRemoteAux2.Refresh();
+                this.pbRemoteAux3.Refresh();
+                this.pbRemoteAux4.Refresh();
             });
         }
         public void RefreshRemoteViews()
@@ -202,6 +266,7 @@ namespace KitchenSink
                 return;
             }
             viewModel.FetchShareSources();
+            
         }
 
     }

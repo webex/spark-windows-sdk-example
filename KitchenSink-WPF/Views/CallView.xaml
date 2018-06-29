@@ -40,7 +40,7 @@
                 </ComboBox>
 
                 <Button Content="Stop Share" Margin="10" Command="{Binding StopShareCMD}" Visibility="{Binding IfShowStopShareButton, Converter={StaticResource bool2VisibilityConverter}}"/>
-                    
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -52,30 +52,80 @@
             </StackPanel>
             <Grid DockPanel.Dock="Left" Margin="10,0,10,0" >
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="80*"/>
                     <RowDefinition Height="300*"/>
                     <RowDefinition Height="72*"/>
                 </Grid.RowDefinitions>
-                <local:FixedAspectWinFormsHost x:Name="wfhShareScreenVideo" Background="White" AspectRatio="{Binding Path=AspectShareScreenVideo}" >
+                <local:FixedAspectWinFormsHost Grid.Row="1" x:Name="wfhShareScreenVideo" Background="White" AspectRatio="{Binding Path=AspectShareScreenVideo}" >
                     <wf:PictureBox x:Name="pbShareScreenVideo" SizeMode="AutoSize"/>
                 </local:FixedAspectWinFormsHost>
-                <Border Name="remoteVideoOrg">
+                <Border Name="remoteVideoOrg" Grid.Row="1">
                     <local:FixedAspectWinFormsHost x:Name="wfhRemotVideo" Background="White" AspectRatio="{Binding Path=AspectRatioRemoteVedio}">
                         <wf:PictureBox x:Name="pbRemoteVideo" SizeMode="AutoSize"/>
                     </local:FixedAspectWinFormsHost>
                 </Border>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="128*"/>
-                        <ColumnDefinition Width="277*"/>
-                        <ColumnDefinition Width="128*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Name="remoteVideoMini" Grid.Row="1">
+                    <Border Name="remoteVideoMini">
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="2"  >
+                    <Border Grid.Column="5">
                         <local:FixedAspectWinFormsHost x:Name="wfhLocalVideo"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
                             <wf:PictureBox x:Name="pblocalVideo" BackColor="White" />
                         </local:FixedAspectWinFormsHost>
                     </Border>
+
+                </Grid>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <Button Content="Remove"   Width="100" Command="{Binding Path=RemoveViewCMD}"/>
+                    </StackPanel>
+                    
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="1" MinHeight="80" x:Name="wfhRemoteAux1"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux1" BackColor="White" SizeMode="StretchImage"/>
+                    </local:FixedAspectWinFormsHost>
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="2" MinHeight="80" x:Name="wfhRemoteAux2"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux2" BackColor="White" SizeMode="StretchImage"/>
+                    </local:FixedAspectWinFormsHost>
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="3" MinHeight="80" x:Name="wfhRemoteAux3"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux3" BackColor="White" SizeMode="StretchImage"/>
+                    </local:FixedAspectWinFormsHost>
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="4" MinHeight="80" x:Name="wfhRemoteAux4"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux4" BackColor="White" SizeMode="StretchImage"/>
+                    </local:FixedAspectWinFormsHost>
+                    <ListView Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" ItemsSource="{Binding RemoteAuxVideoViews}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"></StackPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding PersonName}" TextAlignment="Center"/>
+                                    <CheckBox Content="Receiving video" IsChecked="{Binding IfReceiveVedio}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Grid>
             </Grid>
         </DockPanel>
