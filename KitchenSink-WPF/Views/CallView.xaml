@@ -7,14 +7,22 @@
         xmlns:local="clr-namespace:KitchenSink"
         xmlns:sys ="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        d:DesignHeight="700" d:DesignWidth="1000">
+        d:DesignHeight="750" d:DesignWidth="1000">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resources/Styles.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="bool2VisibilityConverter"/>
+            <DataTemplate x:Key="RemoteAuxVideoViewTemplate">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding PersonName}" TextAlignment="Center"/>
+                    <CheckBox Content="SendingVideo" IsChecked="{Binding IsSendingVideo, Mode=OneWay}" IsEnabled="False"/>
+                    <CheckBox Content="ReceivingVedio" IsChecked="{Binding IsReceivingVideo}" />
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
+
     </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
@@ -23,47 +31,23 @@
                 <TextBlock Text="{Binding CallStatus}" TextAlignment="Center"/>
             </DockPanel>
             <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="266">
-                <CheckBox x:Name="cbSndVideo" Content="Sending video" Margin="10" IsChecked="{Binding IfSendVedio,UpdateSourceTrigger=PropertyChanged}"  />
-                <CheckBox x:Name="cbSndAudio" Content="Sending audio" Margin="10" IsChecked="{Binding IfSendAudio,UpdateSourceTrigger=PropertyChanged}"  />
-                <CheckBox x:Name="cbRcvVideo" Content="Receiving video" Margin="10" IsChecked="{Binding IfReceiveVedio,UpdateSourceTrigger=PropertyChanged}" />
-                <CheckBox x:Name="cbRcvAudio" Content="Receiving audio" Margin="10" IsChecked="{Binding IfReceiveAudio,UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Margin="10,0">Select Share Content:</TextBlock>
-                <ComboBox x:Name="combShareSourceList" Margin="10,0" Text="Select Share Source" ItemsSource="{Binding ShareSourceList}" SelectedItem="{Binding SelectedSource}" DropDownOpened="combShareSourceList_DropDownOpened">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="10,0" Text="{Binding SourceId}" Width="40"/>
-                                <TextBlock Margin="10,0" Text="{Binding Name}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <Button Content="Stop Share" Margin="10" Command="{Binding StopShareCMD}" Visibility="{Binding IfShowStopShareButton, Converter={StaticResource bool2VisibilityConverter}}"/>
-
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Button x:Name="btEndCall" Content="End Call" Margin="10" Command="{Binding EndCallCMD}"/>
-                    <Button Grid.Row="1" Content="Keyboard" Margin="10" Command="{Binding KeyboardCMD}"/>
-                </Grid>
             </StackPanel>
             <Grid DockPanel.Dock="Left" Margin="10,0,10,0" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80*"/>
-                    <RowDefinition Height="300*"/>
-                    <RowDefinition Height="72*"/>
+                    <RowDefinition Height="250*"/>
+                    <RowDefinition Height="80*"/>
                 </Grid.RowDefinitions>
-                <local:FixedAspectWinFormsHost Grid.Row="1" x:Name="wfhShareScreenVideo" Background="White" AspectRatio="{Binding Path=AspectShareScreenVideo}" >
-                    <wf:PictureBox x:Name="pbShareScreenVideo" SizeMode="AutoSize"/>
+                <local:FixedAspectWinFormsHost Grid.Row="1" x:Name="wfhShareScreenVideo" Background="Transparent" AspectRatio="{Binding Path=AspectShareScreenVideo}" >
+                    <wf:PictureBox x:Name="pbShareScreenVideo" SizeMode="Zoom"/>
                 </local:FixedAspectWinFormsHost>
-                <Border Name="remoteVideoOrg" Grid.Row="1">
-                    <local:FixedAspectWinFormsHost x:Name="wfhRemotVideo" Background="White" AspectRatio="{Binding Path=AspectRatioRemoteVedio}">
-                        <wf:PictureBox x:Name="pbRemoteVideo" SizeMode="AutoSize"/>
+                <Border Grid.Row="1" Name="remoteVideoOrg" >
+                    <local:FixedAspectWinFormsHost x:Name="wfhRemotVideo" Background="Transparent" AspectRatio="{Binding Path=AspectRatioRemoteVedio}">
+                        <wf:PictureBox x:Name="pbRemoteVideo" SizeMode="Zoom" />
                     </local:FixedAspectWinFormsHost>
                 </Border>
+                <TextBlock Grid.Row="1" Text="Waiting for others to join..." TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
+
                 <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -77,14 +61,45 @@
                     </Border>
                     <Border Grid.Column="5">
                         <local:FixedAspectWinFormsHost x:Name="wfhLocalVideo"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
-                            <wf:PictureBox x:Name="pblocalVideo" BackColor="White" />
+                            <wf:PictureBox x:Name="pblocalVideo" BackColor="White"/>
                         </local:FixedAspectWinFormsHost>
                     </Border>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" >
+                        <TextBlock Text="Remote Video:" Margin="5" TextAlignment="Center" FontWeight="Bold"></TextBlock>
+                        <CheckBox Content="SendingAudio" IsChecked="{Binding IsRemoteSendingAudio,UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" IsEnabled="False"/>
+                        <CheckBox Content="SendingVideo" IsChecked="{Binding IsRemoteSendingVideo,UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" IsEnabled="False"/>
+                        <CheckBox Content="ReceivingVideo" IsChecked="{Binding IfReceiveVedio,UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox Content="ReceivingAudio" IsChecked="{Binding IfReceiveAudio,UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center" >
+                        <TextBlock Text="Select Share: " Margin="5"></TextBlock>
+                        <ComboBox Text="Select Share Source" ItemsSource="{Binding ShareSourceList}" SelectedItem="{Binding SelectedSource}" DropDownOpened="combShareSourceList_DropDownOpened">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="10,0" Text="{Binding SourceId}" Width="40"/>
+                                        <TextBlock Margin="10,0" Text="{Binding Name}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Stop Share" Width="80" Command="{Binding StopShareCMD}" Visibility="{Binding IfShowStopShareButton, Converter={StaticResource bool2VisibilityConverter}}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                        <Button Content="End Call" Width="80" Command="{Binding EndCallCMD}"/>
+                        <Button Grid.Row="1" Width="80" Content="Keyboard" Command="{Binding KeyboardCMD}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                        <TextBlock Text=" Local Video: " Margin="5" FontWeight="Bold"></TextBlock>
+                        <CheckBox Content="SendingVideo" IsChecked="{Binding IfSendVedio,UpdateSourceTrigger=PropertyChanged}"  />
+                        <CheckBox Content="SendingAudio" IsChecked="{Binding IfSendAudio,UpdateSourceTrigger=PropertyChanged}"  />
+                    </StackPanel>
 
                 </Grid>
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="4*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -95,44 +110,36 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Row="0" Grid.Column="0">
-                        <Button Content="Remove"   Width="100" Command="{Binding Path=RemoveViewCMD}"/>
+
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="1"  Background="Transparent" Visibility="{Binding ElementName=Aux1Contrl, Path=Visibility}" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux1" BackColor="White" SizeMode="Zoom"/>
+                    </local:FixedAspectWinFormsHost>
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="2"  Background="Transparent" Visibility="{Binding ElementName=Aux2Contrl, Path=Visibility}" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux2" BackColor="White" SizeMode="Zoom"/>
+                    </local:FixedAspectWinFormsHost>
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="3"  Background="Transparent" Visibility="{Binding ElementName=Aux3Contrl, Path=Visibility}" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux3" BackColor="White" SizeMode="Zoom"/>
+                    </local:FixedAspectWinFormsHost>
+                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="4"  Background="Transparent" Visibility="{Binding ElementName=Aux4Contrl, Path=Visibility}" AspectRatio="{Binding AspectRatioLocalVedio}" >
+                        <wf:PictureBox x:Name="pbRemoteAux4" BackColor="White" SizeMode="Zoom"/>
+                    </local:FixedAspectWinFormsHost>
+
+                    <UserControl x:Name="Aux1Contrl" Grid.Row="1" Grid.Column="1" ContentTemplate="{StaticResource RemoteAuxVideoViewTemplate}" Content="{Binding RemoteAuxVideoViews[0]}" Visibility="{Binding RemoteAuxVideoViews[0].IsShow, Converter={StaticResource bool2VisibilityConverter}}"></UserControl>
+                    <UserControl x:Name="Aux2Contrl" Grid.Row="1" Grid.Column="2" ContentTemplate="{StaticResource RemoteAuxVideoViewTemplate}" Content="{Binding RemoteAuxVideoViews[1]}" Visibility="{Binding RemoteAuxVideoViews[1].IsShow, Converter={StaticResource bool2VisibilityConverter}}"></UserControl>
+                    <UserControl x:Name="Aux3Contrl" Grid.Row="1" Grid.Column="3" ContentTemplate="{StaticResource RemoteAuxVideoViewTemplate}" Content="{Binding RemoteAuxVideoViews[2]}" Visibility="{Binding RemoteAuxVideoViews[2].IsShow, Converter={StaticResource bool2VisibilityConverter}}"></UserControl>
+                    <UserControl x:Name="Aux4Contrl" Grid.Row="1" Grid.Column="4" ContentTemplate="{StaticResource RemoteAuxVideoViewTemplate}" Content="{Binding RemoteAuxVideoViews[3]}" Visibility="{Binding RemoteAuxVideoViews[3].IsShow, Converter={StaticResource bool2VisibilityConverter}}"></UserControl>
+
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="6"  Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Active Speaker: "></TextBlock>
+                        <TextBlock Text="{Binding ActiveSpeaker}"></TextBlock>
                     </StackPanel>
-                    
-                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="1" MinHeight="80" x:Name="wfhRemoteAux1"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
-                        <wf:PictureBox x:Name="pbRemoteAux1" BackColor="White" SizeMode="StretchImage"/>
-                    </local:FixedAspectWinFormsHost>
-                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="2" MinHeight="80" x:Name="wfhRemoteAux2"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
-                        <wf:PictureBox x:Name="pbRemoteAux2" BackColor="White" SizeMode="StretchImage"/>
-                    </local:FixedAspectWinFormsHost>
-                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="3" MinHeight="80" x:Name="wfhRemoteAux3"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
-                        <wf:PictureBox x:Name="pbRemoteAux3" BackColor="White" SizeMode="StretchImage"/>
-                    </local:FixedAspectWinFormsHost>
-                    <local:FixedAspectWinFormsHost Grid.Row="0" Grid.Column="4" MinHeight="80" x:Name="wfhRemoteAux4"  Background="Gray" AspectRatio="{Binding AspectRatioLocalVedio}" >
-                        <wf:PictureBox x:Name="pbRemoteAux4" BackColor="White" SizeMode="StretchImage"/>
-                    </local:FixedAspectWinFormsHost>
-                    <ListView Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" ItemsSource="{Binding RemoteAuxVideoViews}">
-                        <ListView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"></StackPanel>
-                            </ItemsPanelTemplate>
-                        </ListView.ItemsPanel>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding PersonName}" TextAlignment="Center"/>
-                                    <CheckBox Content="Receiving video" IsChecked="{Binding IfReceiveVedio}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
                 </Grid>
             </Grid>
         </DockPanel>
         <DockPanel Name="commentLayer"  
                    Background="Azure" 
                    LastChildFill="True" 
-                   HorizontalAlignment="Right" 
+                   HorizontalAlignment="Left" 
                    Height="250" Margin="20,5" 
                    Visibility="{Binding IfShowRatingView, Converter={StaticResource bool2VisibilityConverter}}">
             <TextBlock Text="Please rate this call" Margin="10" Height="18" DockPanel.Dock="Top" TextAlignment="Center"/>
@@ -147,7 +154,7 @@
             </Viewbox>
             <TextBox Name="txtComment" TextWrapping="Wrap" Margin="10" MinHeight="70" VerticalAlignment="Stretch" DockPanel.Dock="Top" Height="Auto" Text="{Binding Path=Comment, UpdateSourceTrigger=LostFocus}" />
         </DockPanel>
-        <Grid DockPanel.Dock="Right" Width="200" Height="250" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Azure" Margin="20" Visibility="{Binding IfShowkeyboard, Converter={StaticResource bool2VisibilityConverter}}">
+        <Grid DockPanel.Dock="Right" Width="200" Height="250" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Azure" Margin="20" Visibility="{Binding IfShowkeyboard, Converter={StaticResource bool2VisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -173,6 +180,37 @@
             <Button Grid.Row="4" Grid.Column="0" Width="50" CommandParameter="*" Content="*" Command="{Binding DtmfCMD}"/>
             <Button Grid.Row="4" Grid.Column="1" Width="50" CommandParameter="0" Content="0" Command="{Binding DtmfCMD}"/>
             <Button Grid.Row="4" Grid.Column="2" Width="50" CommandParameter="#" Content="#" Command="{Binding DtmfCMD}"/>
+        </Grid>
+        <StackPanel DockPanel.Dock="Right" Width="250" HorizontalAlignment="Right">
+            <TextBlock Text="Callmemberships:" TextAlignment="Center" Margin="5" FontWeight="Bold"></TextBlock>
+        </StackPanel>
+        <Grid DockPanel.Dock="Right" Width="250" HorizontalAlignment="Right">
+            <ListView Margin="5" ItemsSource="{Binding CallMemberships}" BorderThickness="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="PersonId: "></TextBlock>
+                                    <TextBox Text="{Binding PersonId}" IsReadOnly="True" BorderThickness="0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Email: "></TextBlock>
+                                    <TextBox Text="{Binding Email}" IsReadOnly="True" BorderThickness="0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="State: "></TextBlock>
+                                    <TextBlock Text="{Binding State}"/>
+                                </StackPanel>
+                                <CheckBox Content="IsInitiator" IsChecked="{Binding IsInitiator, Mode=OneWay}" IsEnabled="False"/>
+                                <CheckBox Content="IsSendingAudio" IsChecked="{Binding IsSendingAudio, Mode=OneWay}" IsEnabled="False"/>
+                                <CheckBox Content="IsSendingVideo" IsChecked="{Binding IsSendingVideo, Mode=OneWay}" IsEnabled="False"/>
+                                <CheckBox Content="IsSendingShare" IsChecked="{Binding IsSendingShare, Mode=OneWay}" IsEnabled="False"/>
+                                <CheckBox Content="IsActiveSpeaker" IsChecked="{Binding IsActiveSpeaker, Mode=OneWay}" IsEnabled="False"/>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
         </Grid>
     </Grid>
 </UserControl>

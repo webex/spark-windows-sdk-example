@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:KitchenSink"
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="840">
+             d:DesignHeight="850" d:DesignWidth="840">
     <UserControl.DataContext>
         <local:InitiateCallViewModel/>
     </UserControl.DataContext>
@@ -68,12 +68,16 @@
             </TabItem>
             <TabItem x:Name="tabSearch" Header="search">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="224*"/>
+                        <ColumnDefinition Width="191*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="9*"/>
                     </Grid.RowDefinitions>
-                    <TextBox x:Name="tbSearchAddress" Grid.Row="0" Margin="10,5" Text="{Binding Path=SearchString,UpdateSourceTrigger=PropertyChanged}"/>
-                    <ListView x:Name="lvPersons" Grid.Row="1" Margin="10" ItemsSource="{Binding PersonList}" SelectedItem="{Binding SelectedPerson}">
+                    <TextBox x:Name="tbSearchAddress" Grid.Row="0" Margin="10,5" Text="{Binding Path=SearchString,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"/>
+                    <ListView x:Name="lvPersons" Grid.Row="1" Margin="10" ItemsSource="{Binding PersonList}" SelectedItem="{Binding SelectedPerson}" Grid.ColumnSpan="2">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

@@ -57,6 +57,13 @@ namespace KitchenSink
                 return pbRemoteVideo.Handle;
             }
         }
+        public string RemoteViewAvartar
+        {
+            set
+            {
+                pbRemoteVideo.ImageLocation = value;
+            }
+        }
 
         public IntPtr RemoteShareViewHandle
         {
@@ -64,6 +71,34 @@ namespace KitchenSink
             {
                 return pbShareScreenVideo.Handle;
             }
+        }
+
+        public void UpdateAvarta(IntPtr handle, string vartar)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (handle == RemoteViewHandle)
+                {
+                    RemoteViewAvartar = vartar;
+                }
+                else if (handle == RemoteAux1Handle)
+                {
+                    RemoteAux1Avartar = vartar;
+                }
+                else if (handle == RemoteAux2Handle)
+                {
+                    RemoteAux2Avartar = vartar;
+                }
+                else if (handle == RemoteAux3Handle)
+                {
+                    RemoteAux3Avartar = vartar;
+                }
+                else if (handle == RemoteAux4Handle)
+                {
+                    RemoteAux4Avartar = vartar;
+                }
+            });
+
         }
 
         public IntPtr RemoteAux1Handle
@@ -133,6 +168,7 @@ namespace KitchenSink
             this.pbRemoteVideo.SizeChanged += PbRemoteVideo_SizeChanged;
             this.pblocalVideo.SizeChanged += PblocalVideo_SizeChanged;
             this.pbShareScreenVideo.SizeChanged += PbShareScreenVideo_SizeChanged;
+
         }
 
         private void PblocalVideo_SizeChanged(object sender, EventArgs e)
