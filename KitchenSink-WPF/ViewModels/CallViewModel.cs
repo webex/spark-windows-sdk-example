@@ -979,8 +979,8 @@ namespace KitchenSink
             else if (mediaChgEvent is RemoteAuxVideosCountChangedEvent)
             {
                 var remoteVideosCountChanged = mediaChgEvent as RemoteAuxVideosCountChangedEvent;
+                output($"RemoteAuxVideosCountChangedEvent: remote videos count changes to: {remoteVideosCountChanged.Count}");
                 var remoteVideosCount = remoteVideosCountChanged.Count > 1? remoteVideosCountChanged.Count:0;
-                output($"RemoteAuxVideosCountChangedEvent: remote videos count changes to: {remoteVideosCount}");
 
                 int idx = 0;
                 foreach (var item in RemoteAuxVideoViews)
