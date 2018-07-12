@@ -18,7 +18,7 @@
                 <StackPanel HorizontalAlignment="Center">
                     <TextBlock Text="{Binding PersonName}" TextAlignment="Center"/>
                     <CheckBox Content="SendingVideo" IsChecked="{Binding IsSendingVideo, Mode=OneWay}" IsEnabled="False"/>
-                    <CheckBox Content="ReceivingVedio" IsChecked="{Binding IsReceivingVideo}" />
+                    <CheckBox Content="ReceivingVideo" IsChecked="{Binding IsReceivingVideo}" />
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
