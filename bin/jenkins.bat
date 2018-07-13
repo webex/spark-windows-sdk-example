@@ -11,6 +11,8 @@ echo %DEVENVDIR%
 pushd .
 bin\nuget.exe restore solutions\KitchenSink\KitchenSink.sln -NonInteractive
 
+REM clear NuGet package cache
+bin\nuget.exe locals all -clear
 
 set SDKNuGetPackage=1.4.0-EFT01
 echo SDKNuGetPackage is %SDKNuGetPackage%
