@@ -175,7 +175,7 @@ namespace KitchenSink
         private void FetchRecentContacts()
         {
             var spark = ApplicationController.Instance.CurSparkManager.CurSpark;
-            List<string> recentContacts = ApplicationController.Instance.CurSparkManager?.RecentContacts?.RecentContactsStore;
+            List<string> recentContacts = ApplicationController.Instance.CurSparkManager?.RecentContacts?.RecentContactsStore ?? new List<string>(0);
             List<Person> personList = new List<Person>();
 
             if (recentContacts == null || personList == null)
